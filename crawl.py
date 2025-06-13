@@ -16,7 +16,7 @@ from utils.helpers import auto_download, remove_isolated_code_fences
 
 # HWP 처리 관련 (olefile, hwp5html, html2text 등은 사용하지 않음)
 
-client = OpenAI(api_key="OPENAI_API_KEY")
+
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 ###############################################
 # 웹 크롤링 → Markdown 변환 관련 함수
