@@ -14,15 +14,6 @@ from converter.txtTransformer import transform_level1_header
 from crawler.crawler import get_rendered_html, extract_content
 from utils.helpers import auto_download, remove_isolated_code_fences
 
-# HWP 처리 관련 (olefile, hwp5html, html2text 등은 사용하지 않음)
-
-
-# openai.api_key = os.getenv("OPENAI_API_KEY")
-###############################################
-# 웹 크롤링 → Markdown 변환 관련 함수
-###############################################
-
-
 def process_url(url, target_class):
     html = get_rendered_html(url)
     content = extract_content(html, target_class, base_url=url)
