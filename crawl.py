@@ -5,8 +5,7 @@ import os
 import io
 import re
 import zipfile
-
-from openai import OpenAI
+from utils.openai_client import client
 
 from converter.fileToMarkdown import extract_text_from_file, split_text_with_overlap, convert_chunk_to_markdown
 from converter.htmlToMarkdown import remove_code_block_markers, convert_to_markdown

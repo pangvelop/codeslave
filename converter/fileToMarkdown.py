@@ -6,7 +6,7 @@ from xml.etree import ElementTree as ET
 import pandas as pd
 import streamlit as st
 
-from crawl import client
+from utils.openai_client import client
 from utils.helpers import fill_missing_cells, remove_code_fence
 
 
