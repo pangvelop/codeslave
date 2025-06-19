@@ -1,6 +1,7 @@
 import re
 
-from crawl import client
+from utils.openai_client import client
+
 
 
 def remove_code_block_markers(text: str) -> str:
