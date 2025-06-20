@@ -1,48 +1,34 @@
-import time
-from urllib.parse import urljoin
+import requests
+from bs4 import BeautifulSoup
 
-from bs4 import NavigableString, BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+def get_rendered_html(url: str) -> str:
+    """
+    웹 페이지의 HTML 내용을 가져옵니다
+    """
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # 오류 발생시 예외 발생
+        return response.text
+    except requests.RequestException as e:
+        raise Exception(f"페이지 로딩 실패: {str(e)}")
 
-
-def get_rendered_html(url):
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-dev-shm-usage")
-    driver = webdriver.Chrome(options=chrome_options)
-    driver.get(url)
-    time.sleep(3)  # 동적 콘텐츠 로딩 대기
-    html = driver.page_source
-    driver.quit()
-    return html
-
-
-def extract_element(element, base_url=None):
-    if isinstance(element, NavigableString):
-        return element.strip()
-    if element.name in ['script', 'style']:
-        return ""
-    if element.name in ['a', 'img']:
-        if element.name == 'img' and base_url:
-            src = element.get('src')
-            if src and not src.startswith('http'):
-                element['src'] = urljoin(base_url, src)
-        return str(element)
-    result = ""
-    for child in element.children:
-        child_text = extract_element(child, base_url)
-        if child_text:
-            result += child_text + " "
-    return result.strip()
-
-
-def extract_content(html, target_class=None, base_url=None):
-    soup = BeautifulSoup(html, 'html.parser')
-    if target_class:
-        container = soup.find(class_=target_class)
-        element = container if container else soup
-    else:
-        element = soup
-    return extract_element(element, base_url)
+def extract_content(html: str) -> str:
+    """
+    HTML에서 의미 있는 콘텐츠를 추출합니다
+    """
+    try:
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        # 불필요한 요소 제거
+        for tag in soup.find_all(['script', 'style']):
+            tag.decompose()
+            
+        # 본문 내용 추출
+        text = soup.get_text(separator='\n', strip=True)
+        
+        # 빈 줄 정리
+        text = '\n'.join(line for line in text.split('\n') if line.strip())
+        
+        return text
+    except Exception as e:
+        raise Exception(f"콘텐츠 추출 실패: {str(e)}")
